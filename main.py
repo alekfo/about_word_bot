@@ -1,16 +1,16 @@
-# This is a sample Python script.
+import telebot
+from telebot.storage import StateMemoryStorage
+from telebot import custom_filters
+from config import BOT_TOKEN
+from handlers.main_handlers import reg_handlers
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+state_storage = StateMemoryStorage()
 
+def main():
+    bot = telebot.TeleBot(BOT_TOKEN, state_storage=state_storage)
+    bot.add_custom_filter(custom_filters.StateFilter(bot))
+    reg_handlers(bot)
+    bot.infinity_polling()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
