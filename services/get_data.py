@@ -4,7 +4,7 @@ import config
 from typing import Any
 
 
-def get_data(word):
+def get_data(word, lang):
     langs = ['en-ru', 'ru-en', 'ru-de', 'ru-es', 'ru-lv']
 
     base_url = config.APP_URL
@@ -13,7 +13,7 @@ def get_data(word):
 
     params = {
         'key': app_key,
-        'lang': 'en-ru',  # Направление перевода
+        'lang': lang,  # Направление перевода
         'text': word,  # Слово для перевода
         'ui': 'ru'  # Хотим получать пояснения на русском
     }
@@ -28,8 +28,8 @@ def get_data(word):
             definitions.append(i_def['text'])
         data[i_speech['pos']] = definitions
 
-    output_str = f'Вот найденные переводы слова {word}\n'
+    output_str = f'Направление перевода: <b>{lang}</b>\nНайденные переводы слова {word.upper()}:\n'
     for i_key, i_val in data.items():
-        output_str += f'{i_key}: {', '.join(i_val)}\n'
+        output_str += f'<b>{i_key.upper()}</b>: {', '.join(i_val)}\n'
 
     return output_str

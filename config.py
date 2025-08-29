@@ -6,6 +6,7 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 APP_KEY = os.getenv('YANDEX_KEY')
 APP_URL = os.getenv('YANDEX_URL')
+DB_PATH = os.getenv('DB_PATH')
 
 if not BOT_TOKEN:
     raise ValueError("Ошибка конфигурации: BOT_TOKEN не найден. Проверьте файл .env")
