@@ -20,11 +20,16 @@ class History(BaseModel):
     created_at = DateTimeField(default=datetime.now)
 
     def __str__(self):
-        return 'Номер запроса перевода: <b>{request_id}</b>;\nДата и время запроса: <b>{created_at}</b>;\nРезультат запроса:\n[\n{results}]\n'.format(
+        return '\nДата и время запроса: <b>{created_at}</b>;\nРезультат запроса:\n[\n{results}]\n'.format(
             request_id=self.request_id,
             created_at=self.created_at,
             results=self.results
         )
 
 def create_models():
+    """
+    Функция для создания таблицы базы данных на основе созданных моделей
+    :return: None
+    """
+
     db.create_tables(BaseModel.__subclasses__())

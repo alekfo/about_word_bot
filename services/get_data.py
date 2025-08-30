@@ -5,7 +5,14 @@ from typing import Any
 
 
 def get_data(word, lang):
-    langs = ['en-ru', 'ru-en', 'ru-de', 'ru-es', 'ru-lv']
+    """
+    Функция для работы с API Yandex
+    :param word: строка со словом от пользователя
+    :param lang: направление перевода
+    :return: запрашивает данные по заданному URL, парсит данные
+     в нужный формат для вывода, возвращает строку с информацией
+     о слове в соответствии с навпрвлением перевода
+    """
 
     base_url = config.APP_URL
 
