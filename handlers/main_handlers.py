@@ -8,6 +8,13 @@ from database.peewee_db import User, History, create_models
 
 
 def reg_handlers(bot: TeleBot):
+    """
+    Функция регистрации всех возможных обработчиков в bot
+    :param bot: объект бота (объект класса TeleBot)
+    :return: None. Изменяется состояние объекта бота
+    Все возможные сценарии полученных сообщений регистрируются в объект бота с помощью декораторов
+    """
+
     bot.set_my_commands([
         BotCommand("/start", "Запустить бота"),
         BotCommand("/help", "Помощь и команды"),
@@ -18,6 +25,13 @@ def reg_handlers(bot: TeleBot):
 
     @bot.message_handler(commands=['help'])
     def show_cmd(message: Message):
+        """
+        Обработчик команды /help
+        :param message: сообщение от пользователя
+        После обработки отправляет пользователю сообщение с доступными командами и
+        клавиатурой с доступными командами, меняет статус данного пользователя на menu
+        """
+
         cmds = bot.get_my_commands()
         output_txt = 'Доступные команды: \n\n'
 
@@ -29,6 +43,14 @@ def reg_handlers(bot: TeleBot):
 
     @bot.message_handler(commands=['start'])
     def send_welcome(message: Message):
+        """
+        Обработчик команды /start
+        :param message: сообщение от пользователя
+        После обработки отправляет пользователю приветственное сообщение
+        с клавиатурой возможных направлений перевода,
+        меняет состояние на choise
+        """
+
         user_id = message.from_user.id
         username = message.from_user.username
         first_name = message.from_user.first_name
@@ -49,6 +71,12 @@ def reg_handlers(bot: TeleBot):
 
     @bot.message_handler(commands=['history'])
     def get_history(message: Message):
+        """
+        Обработчик команды /history
+        :param message: сообщение от пользователя
+        После обработки отправляет пользователю историю запросов с клавиатурой разделов
+        """
+
         inst = User.get(User.user_id == message.from_user.id)
         data_list = inst.histories
         print(type(data_list))
@@ -62,6 +90,17 @@ def reg_handlers(bot: TeleBot):
 
     @bot.message_handler(state=reg_states.choise)
     def send_welcome(message: Message):
+        """
+        Обработчик состояния choise (ловит это состояние)
+        :param message: сообщение от пользователя c выбранным направлением перевода
+        После обработки отправляет пользователю сообщение с выбранным направлением перевода,
+        предлагает пользователю отправить слово для перевода,
+        также содержит клавиатуру для возврата к выбору словарей.
+        При получении текста "Главное меню" меняет состояние на menu и
+        отправляет клавиатуру с основными командами.
+        Меняет состояние на in_dict
+        """
+
         bot.set_state(message.from_user.id, reg_states.in_dict, message.chat.id)
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             if message.text == 'Русско-английский словарь':
@@ -88,6 +127,18 @@ def reg_handlers(bot: TeleBot):
 
     @bot.message_handler(state=reg_states.in_dict)
     def translate(message: Message):
+        """
+        Обработчки состояния in_dict (ловит слова для перевода)
+        :param message: сообщение от пользователя c
+        словом для перевода или сообщением "Вернуться к выбору словарей".
+        При получении 'Вернуться к выбору словарей' меняет состояние на choise и
+        отправляет клавиатуру для выбора слоаварей.
+        При получении слова для перевода делает запрос к функции get_data для получения информации
+        о данном слова.
+        Записывает в модель History базы данных полученные данные от get_data.
+        Отправляет пользователю строку с информацией о слове
+        """
+
         if message.text == 'Вернуться к выбору словарей':
             bot.set_state(message.from_user.id, reg_states.choise, message.chat.id)
             bot.send_message(message.chat.id, 'Выбери словарь', reply_markup=choise_lang_markup())
@@ -110,4 +161,11 @@ def reg_handlers(bot: TeleBot):
 
     @bot.message_handler(state=None, func=lambda message: True)
     def first_step(message: Message):
+        """
+        Обработчик любого сообщения при условии отсутствия состояния
+        :param message: любое сообщение от пользователя, когда еще не задано состояние,
+        предполагется в начале диалога.
+        Отправляет пользователю сообщение с клавиатурой help
+        """
+
         bot.send_message(message.chat.id, 'Чтобы начать — введите /help', reply_markup=first_step_markup())
