@@ -35,12 +35,50 @@ def first_step_markup():
     return keyboard
 
 def commands():
+    """
+        Функция дял создания объекта клавиатуры с кнопками основного меню
+        :return: keyboard
+        """
+
     # Создаём объекты кнопок.
-    button_1 = KeyboardButton(text=r"/start")
-    button_2 = KeyboardButton(text=r"/help")
-    button_3 = KeyboardButton(text=r"/history")
+    buttons = [
+        r"/start",
+        r"/help",
+        r"/history",
+        r"/mailing"
+    ]
 
     # Создаём объект клавиатуры, добавляя в него кнопки.
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(button_1, button_2, button_3)
+
+    for button_text in buttons:
+        keyboard.add(KeyboardButton(text=button_text))
+    return keyboard
+
+def turning_on_mailing():
+    # Создаём объекты кнопок.
+    buttons = [
+        r"Включить ежедневную рассылку",
+        r"Главное меню"
+    ]
+
+    # Создаём объект клавиатуры, добавляя в него кнопки.
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+
+    for button_text in buttons:
+        keyboard.add(KeyboardButton(text=button_text))
+    return keyboard
+
+def turning_off_mailing():
+    # Создаём объекты кнопок.
+    buttons = [
+        r"Выключить ежедневную рассылку",
+        r"Главное меню"
+    ]
+
+    # Создаём объект клавиатуры, добавляя в него кнопки.
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+
+    for button_text in buttons:
+        keyboard.add(KeyboardButton(text=button_text))
     return keyboard

@@ -35,7 +35,7 @@ def get_data(word, lang):
             definitions.append(i_def['text'])
         data[i_speech['pos']] = definitions
 
-    output_str = f'Направление перевода: <b>{lang}</b>\nНайденные переводы слова {word.upper()}:\n'
+    output_str = f'Направление перевода: <b>{lang}</b>\nНайденные переводы слова <b>{word.upper()}</b>:\n'
     for i_key, i_val in data.items():
         output_str += f'<b>{i_key.upper()}</b>: {', '.join(i_val)}\n'
 
