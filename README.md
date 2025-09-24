@@ -4,7 +4,7 @@
 
  [Свяжитесь с нашим ботом:](https://t.me/about_word_bot)
 
- [Ссылка на репозиторий:](https://gitlab.skillbox.ru/aleksei_shlenskov/python_basic_diploma)
+ [Ссылка на репозиторий:](https://github.com/alekfo/about_word_bot)
 
 # Описание прокта
 Telegram-бот для перевода слов между языками с 
