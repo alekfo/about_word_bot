@@ -25,4 +25,4 @@ def reg_cancel_handlers(bot: TeleBot):
                          func=lambda message: 'Главное меню' in message.text)
     def return_to_menu(message: Message):
         bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
-        bot.send_message(message.chat.id, 'Выбери действие', reply_markup=commands())
+        bot.send_message(message.chat.id, '⚙️Выбери действие', reply_markup=commands())

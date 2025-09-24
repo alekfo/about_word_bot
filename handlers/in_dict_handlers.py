@@ -28,23 +28,23 @@ def reg_in_dict_handlers(bot: TeleBot):
         """
 
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-            if message.text == 'Русско-английский словарь':
+            if 'Русско-английский словарь' in message.text:
                 data['lang'] = 'ru-en'
-            elif message.text == 'Англо-русский словарь':
+            elif 'Англо-русский словарь' in message.text:
                 data['lang'] = 'en-ru'
-            elif message.text == 'Русско-немецкий словарь':
+            elif 'Русско-немецкий словарь' in message.text:
                 data['lang'] = 'ru-de'
-            elif message.text == 'Русско-французский словарь':
+            elif 'Русско-французский словарь' in message.text:
                 data['lang'] = 'ru-fr'
-            elif message.text == 'Русские синонимы':
+            elif 'Русские синонимы' in message.text:
                 data['lang'] = 'ru-ru'
-            elif message.text == 'Английские синонимы':
+            elif 'Английские синонимы' in message.text:
                 data['lang'] = 'en-en'
 
-        bot.send_message(message.chat.id, f'Отлично! Ты выбрал <b>{message.text}</b>.\n'
-                                          f'Пришли любое слово на исходном языке и '
+        bot.send_message(message.chat.id, f'✅Отлично! Ты выбрал <b>{message.text}</b>.\n'
+                                          f'Пришли любое слово🔤 на исходном языке и '
                                           f'я покажу тебе информацию о нем.\n'
-                                          f'Если хочешь вернуться к выбору словарей — '
+                                          f'↩️Если хочешь вернуться к выбору словарей — '
                                           f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
                          reply_markup=back_to_choise(), parse_mode='HTML')
         bot.set_state(message.from_user.id, reg_states.in_dict, message.chat.id)
@@ -63,10 +63,10 @@ def reg_in_dict_handlers(bot: TeleBot):
         Отправляет пользователю строку с информацией о слове
         """
 
-        if message.text == 'Вернуться к выбору словарей':
+        if 'Вернуться к выбору словарей' in message.text:
             bot.set_state(message.from_user.id, reg_states.choise, message.chat.id)
-            bot.send_message(message.chat.id, 'Выбери словарь', reply_markup=choise_lang_markup())
-        elif message.text.isalpha() and message.text != 'Вернуться к выбору словарей':
+            bot.send_message(message.chat.id, '🌐Выбери словарь', reply_markup=choise_lang_markup())
+        elif message.text.isalpha() and message.text != '↩️Вернуться к выбору словарей':
             with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
                 curr_lang = data.get('lang', 'en-ru')
                 result = get_data(message.text, curr_lang)
@@ -77,11 +77,11 @@ def reg_in_dict_handlers(bot: TeleBot):
             )
 
             bot.send_message(message.chat.id, f'{result}\n'
-                                              f'Если хочешь продолжить — отправь новое слово,\n'
-                                              f'Если хочешь вернуться к выбору словарей — '
+                                              f'🚀Если хочешь продолжить — отправь новое слово,\n'
+                                              f'↩️Если хочешь вернуться к выбору словарей — '
                                               f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
                              reply_markup=back_to_choise(), parse_mode='HTML')
         else:
-            bot.send_message(message.chat.id, 'Слово должно состоять только из букв. Введи корректное слово '
+            bot.send_message(message.chat.id, '❌Слово должно состоять только из букв. Введи корректное слово '
                                               'или вернись к выбору словарей, нажав на кнопку.',
                              reply_markup=back_to_choise())

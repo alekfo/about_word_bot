@@ -21,10 +21,10 @@ def reg_main_handlers(bot: TeleBot):
     """
 
     bot.set_my_commands([
-        BotCommand("/start", "Запустить бота"),
-        BotCommand("/help", "Помощь и команды"),
-        BotCommand("/history", "Посмотреть историю запросов"),
-        BotCommand("/mailing", "Управлять ежедневной рассылкой")
+        BotCommand("/start", "🌐Запустить переводчик"),
+        BotCommand("/help", "ℹ️Помощь и команды"),
+        BotCommand("/history", "📖Посмотреть историю запросов"),
+        BotCommand("/mailing", "🔔Управлять ежедневной рассылкой")
     ])
 
 
@@ -66,13 +66,13 @@ def reg_main_handlers(bot: TeleBot):
                 first_name = first_name,
                 lang_for_mailing = 'ru-en'
             )
-            bot.send_message(message.chat.id, f"Привет, {message.from_user.first_name}!\n"
+            bot.send_message(message.chat.id, f"👋Привет, {message.from_user.first_name}!\n"
                                               "Этот бот поможет тебе перевести необходимые слова, "
                                               "а также узнать новые синонимы.\n"
-                                              "Для выбора нужного словаря воспользуйся кнопками ниже\n", reply_markup=choise_lang_markup())
+                                              "🌐Для выбора нужного словаря воспользуйся кнопками ниже\n", reply_markup=choise_lang_markup())
         except IntegrityError:
-            bot.send_message(message.chat.id, f"Рад снова тебя видеть!\n"
-                                              "Для выбора нужного словаря воспользуйся кнопками ниже\n", reply_markup=choise_lang_markup())
+            bot.send_message(message.chat.id, f"👋Рад снова тебя видеть!\n"
+                                              "🌐Для выбора нужного словаря воспользуйся кнопками ниже\n", reply_markup=choise_lang_markup())
         bot.set_state(message.from_user.id, reg_states.choise, message.chat.id)
 
     @bot.message_handler(commands=['history'])
@@ -85,9 +85,9 @@ def reg_main_handlers(bot: TeleBot):
 
         inst = User.get(User.user_id == message.from_user.id)
         data_list = inst.histories
-        output_data = 'Вот история запросов на перевод: \n\n'
+        output_data = '📖Вот история запросов на перевод: \n\n'
         for i_index, i_req in enumerate(data_list):
-            output_data += f'{i_req}\n'
+            output_data += f'🈯{i_req}\n'
         bot.send_message(message.chat.id, output_data, reply_markup=commands(), parse_mode='HTML')
         bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
 
@@ -100,15 +100,15 @@ def reg_main_handlers(bot: TeleBot):
 
         inst = User.get(User.user_id == message.from_user.id)
         if inst.mailing_flag:
-            bot.send_message(message.chat.id, 'Ежедневная рассылка <b>включена</b>.\n'
+            bot.send_message(message.chat.id, '✅Ежедневная рассылка <b>включена</b>.\n'
                                               'Чтобы выключить ежедневную рассылку нажмите на копку выключения\n'
-                                              'Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
+                                              '↩️Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
                              reply_markup=turning_off_mailing(), parse_mode='HTML')
             bot.set_state(message.from_user.id, reg_states.in_menage_mailing, message.chat.id)
         else:
-            bot.send_message(message.chat.id, 'Ежедневная рассылка <b>выключена</b>.\n'
+            bot.send_message(message.chat.id, '🚫Ежедневная рассылка <b>выключена</b>.\n'
                                               'Чтобы включить ежедневную рассылку нажмите на копку включения\n'
-                                              'Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
+                                              '↩️Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
                              reply_markup=turning_on_mailing(), parse_mode='HTML')
             bot.set_state(message.from_user.id, reg_states.in_menage_mailing, message.chat.id)
 
