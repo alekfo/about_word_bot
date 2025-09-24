@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 .idea/
 database/database.db
+utils/rus_words_for_mailing.txt
+utils/eng_words_for_mailing.txt
