@@ -37,14 +37,18 @@ def reg_main_handlers(bot: TeleBot):
         клавиатурой с доступными командами, меняет статус данного пользователя на menu
         """
 
-        cmds = bot.get_my_commands()
-        output_txt = 'Доступные команды: \n\n'
+        curr_user = User.get_or_none(User.user_id == message.from_user.id)
+        if curr_user:
+            cmds = bot.get_my_commands()
+            output_txt = 'Доступные команды: \n\n'
 
-        for cmd in cmds:
-            output_txt += f'{cmd.command} - {cmd.description}\n'
-        bot.send_message(message.chat.id, output_txt, reply_markup=commands())
-        bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
-
+            for cmd in cmds:
+                output_txt += f'{cmd.command} - {cmd.description}\n'
+            bot.send_message(message.chat.id, output_txt, reply_markup=commands())
+            bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
+        else:
+            bot.send_message(message.chat.id, 'Похоже ты тут впервые? Чтобы понять что к чему нажми на /start', reply_markup=commands(), parse_mode='HTML')
+            bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
 
     @bot.message_handler(commands=['start'])
     def send_welcome(message: Message):
@@ -69,10 +73,12 @@ def reg_main_handlers(bot: TeleBot):
             bot.send_message(message.chat.id, f"👋Привет, {message.from_user.first_name}!\n"
                                               "Этот бот поможет тебе перевести необходимые слова, "
                                               "а также узнать новые синонимы.\n"
-                                              "🌐Для выбора нужного словаря воспользуйся кнопками ниже\n", reply_markup=choise_lang_markup())
+                                              "🌐Для выбора нужного словаря воспользуйся кнопками ниже\n\n"
+                                              "↩️Для перехода в основное меню нажмите на кнопку <b>Главное меню</b>", reply_markup=choise_lang_markup(), parse_mode='HTML')
         except IntegrityError:
             bot.send_message(message.chat.id, f"👋Рад снова тебя видеть!\n"
-                                              "🌐Для выбора нужного словаря воспользуйся кнопками ниже\n", reply_markup=choise_lang_markup())
+                                              "🌐Для выбора нужного словаря воспользуйся кнопками ниже\n\n"
+                                              "↩️Для перехода в основное меню нажмите на кнопку <b>Главное меню</b>", reply_markup=choise_lang_markup(), parse_mode='HTML')
         bot.set_state(message.from_user.id, reg_states.choise, message.chat.id)
 
     @bot.message_handler(commands=['history'])
@@ -82,14 +88,18 @@ def reg_main_handlers(bot: TeleBot):
         :param message: сообщение от пользователя
         После обработки отправляет пользователю историю запросов с клавиатурой разделов
         """
-
-        inst = User.get(User.user_id == message.from_user.id)
-        data_list = inst.histories
-        output_data = '📖Вот история запросов на перевод: \n\n'
-        for i_index, i_req in enumerate(data_list):
-            output_data += f'🈯{i_req}\n'
-        bot.send_message(message.chat.id, output_data, reply_markup=commands(), parse_mode='HTML')
-        bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
+        curr_user = User.get_or_none(User.user_id == message.from_user.id)
+        if curr_user:
+            inst = User.get(User.user_id == message.from_user.id)
+            data_list = inst.histories
+            output_data = '📖Вот история запросов на перевод: \n\n'
+            for i_index, i_req in enumerate(data_list):
+                output_data += f'🈯{i_req}\n'
+            bot.send_message(message.chat.id, output_data, reply_markup=commands(), parse_mode='HTML')
+            bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
+        else:
+            bot.send_message(message.chat.id, 'Похоже ты тут впервые? Чтобы понять что к чему нажми на /start', reply_markup=commands(), parse_mode='HTML')
+            bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
 
     @bot.message_handler(commands=['mailing'])
     def get_mailing(message: Message):
@@ -98,17 +108,23 @@ def reg_main_handlers(bot: TeleBot):
         :param message: сообщение от пользователя
         """
 
-        inst = User.get(User.user_id == message.from_user.id)
-        if inst.mailing_flag:
-            bot.send_message(message.chat.id, '✅Ежедневная рассылка <b>включена</b>.\n'
-                                              'Чтобы выключить ежедневную рассылку нажмите на копку выключения\n'
-                                              '↩️Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
-                             reply_markup=turning_off_mailing(), parse_mode='HTML')
-            bot.set_state(message.from_user.id, reg_states.in_menage_mailing, message.chat.id)
+        curr_user = User.get_or_none(User.user_id == message.from_user.id)
+        if curr_user:
+            inst = User.get(User.user_id == message.from_user.id)
+            if inst.mailing_flag:
+                bot.send_message(message.chat.id, '✅Ежедневная рассылка <b>включена</b>.\n'
+                                                  'Чтобы выключить ежедневную рассылку нажмите на копку выключения\n'
+                                                  '↩️Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
+                                 reply_markup=turning_off_mailing(), parse_mode='HTML')
+                bot.set_state(message.from_user.id, reg_states.in_menage_mailing, message.chat.id)
+            else:
+                bot.send_message(message.chat.id, '🚫Ежедневная рассылка <b>выключена</b>.\n'
+                                                  'Чтобы включить ежедневную рассылку нажмите на копку включения\n'
+                                                  '↩️Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
+                                 reply_markup=turning_on_mailing(), parse_mode='HTML')
+                bot.set_state(message.from_user.id, reg_states.in_menage_mailing, message.chat.id)
         else:
-            bot.send_message(message.chat.id, '🚫Ежедневная рассылка <b>выключена</b>.\n'
-                                              'Чтобы включить ежедневную рассылку нажмите на копку включения\n'
-                                              '↩️Для возврата в основное меню нажмите на кнопку <b>Главное меню</b>',
-                             reply_markup=turning_on_mailing(), parse_mode='HTML')
-            bot.set_state(message.from_user.id, reg_states.in_menage_mailing, message.chat.id)
+            bot.send_message(message.chat.id, 'Похоже ты тут впервые? Чтобы понять что к чему нажми на /start', reply_markup=commands(),
+                             parse_mode='HTML')
+            bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)
 

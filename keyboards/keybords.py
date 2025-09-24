@@ -30,7 +30,7 @@ def back_to_choise():
 
 def first_step_markup():
     # Создаём объекты кнопок.
-    button_1 = KeyboardButton(text=r"/help")
+    button_1 = KeyboardButton(text=r"/start")
 
     # Создаём объект клавиатуры, добавляя в него кнопки.
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)

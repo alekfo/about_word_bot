@@ -27,4 +27,4 @@ def any_message_handlers(bot: TeleBot):
         Отправляет пользователю сообщение с клавиатурой help
         """
 
-        bot.send_message(message.chat.id, '🚀Чтобы начать — введите /help', reply_markup=first_step_markup())
+        bot.send_message(message.chat.id, '🚀Чтобы начать — введите /start', reply_markup=first_step_markup())

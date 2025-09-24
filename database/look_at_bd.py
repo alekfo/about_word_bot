@@ -11,8 +11,12 @@ from keyboards.keybords import (choise_lang_markup,
 from services.get_data import get_data
 from database.peewee_db import User, History
 
+# username_to_delete = "alek_fo"
+# deleted_count = User.delete().where(User.user_name == username_to_delete).execute()
+# username_to_delete = "pinkiss7"
+# deleted_count = User.delete().where(User.user_name == username_to_delete).execute()
+
 clients = list(User.select())
-print(len(clients))
 
 for i_user in clients:
     print(i_user.user_name)
