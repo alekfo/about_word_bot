@@ -92,8 +92,9 @@ def reg_main_handlers(bot: TeleBot):
         if curr_user:
             inst = User.get(User.user_id == message.from_user.id)
             data_list = inst.histories
-            output_data = '📖Вот история запросов на перевод: \n\n'
-            for i_index, i_req in enumerate(data_list):
+            last_5_requests = data_list[-5:] if len(data_list) > 5 else data_list
+            output_data = '📖Вот история последних 5 запросов на перевод: \n\n'
+            for i_index, i_req in enumerate(last_5_requests):
                 output_data += f'🈯{i_req}\n'
             bot.send_message(message.chat.id, output_data, reply_markup=commands(), parse_mode='HTML')
             bot.set_state(message.from_user.id, reg_states.menu, message.chat.id)

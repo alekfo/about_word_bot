@@ -26,28 +26,36 @@ def reg_in_dict_handlers(bot: TeleBot):
         отправляет клавиатуру с основными командами.
         Меняет состояние на in_dict
         """
+        try:
+            with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+                if 'Русско-английский словарь' in message.text:
+                    data['lang'] = 'ru-en'
+                elif 'Англо-русский словарь' in message.text:
+                    data['lang'] = 'en-ru'
+                elif 'Русско-немецкий словарь' in message.text:
+                    data['lang'] = 'ru-de'
+                elif 'Русско-французский словарь' in message.text:
+                    data['lang'] = 'ru-fr'
+                elif 'Русские синонимы' in message.text:
+                    data['lang'] = 'ru-ru'
+                elif 'Английские синонимы' in message.text:
+                    data['lang'] = 'en-en'
+                else:
+                    bot.send_message(message.chat.id,
+                                     '<b>Некорректное значение при вводе</b>. Попробуйте снова',
+                                     reply_markup=choise_lang_markup(),
+                                     parse_mode='HTML')
+                    return
 
-        with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-            if 'Русско-английский словарь' in message.text:
-                data['lang'] = 'ru-en'
-            elif 'Англо-русский словарь' in message.text:
-                data['lang'] = 'en-ru'
-            elif 'Русско-немецкий словарь' in message.text:
-                data['lang'] = 'ru-de'
-            elif 'Русско-французский словарь' in message.text:
-                data['lang'] = 'ru-fr'
-            elif 'Русские синонимы' in message.text:
-                data['lang'] = 'ru-ru'
-            elif 'Английские синонимы' in message.text:
-                data['lang'] = 'en-en'
-
-        bot.send_message(message.chat.id, f'✅Отлично! Ты выбрал <b>{message.text}</b>.\n'
-                                          f'Пришли любое слово🔤 на исходном языке и '
-                                          f'я покажу тебе информацию о нем.\n'
-                                          f'↩️Если хочешь вернуться к выбору словарей — '
-                                          f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
-                         reply_markup=back_to_choise(), parse_mode='HTML')
-        bot.set_state(message.from_user.id, reg_states.in_dict, message.chat.id)
+            bot.send_message(message.chat.id, f'✅Отлично! Ты выбрал <b>{message.text}</b>.\n\n'
+                                              f'Пришли любое слово на исходном языке и '
+                                              f'я покажу тебе информацию о нем.\n\n'
+                                              f'↩️Если хочешь вернуться к выбору словарей — '
+                                              f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
+                             reply_markup=back_to_choise(), parse_mode='HTML')
+            bot.set_state(message.from_user.id, reg_states.in_dict, message.chat.id)
+        except Exception as e:
+            bot.send_message(message.chat.id, f'Ошибка обработки сообщения: {e}. Попробуйте снова', reply_markup=choise_lang_markup())
 
     @bot.message_handler(state=reg_states.in_dict)
     def translate(message: Message):
@@ -70,14 +78,15 @@ def reg_in_dict_handlers(bot: TeleBot):
             with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
                 curr_lang = data.get('lang', 'en-ru')
                 result = get_data(message.text, curr_lang)
-            cur_user = User.get_or_none(User.user_id == message.from_user.id)
-            History.create(
-                user=cur_user,
-                results=result
-            )
+            if result != 'По твоему запросу ничего не найдено\n':
+                cur_user = User.get_or_none(User.user_id == message.from_user.id)
+                History.create(
+                    user=cur_user,
+                    results=result
+                )
 
             bot.send_message(message.chat.id, f'{result}\n'
-                                              f'🚀Если хочешь продолжить — отправь новое слово,\n'
+                                              f'🚀Если хочешь продолжить — отправь новое слово,\n\n'
                                               f'↩️Если хочешь вернуться к выбору словарей — '
                                               f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
                              reply_markup=back_to_choise(), parse_mode='HTML')

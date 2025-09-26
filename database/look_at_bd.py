@@ -12,7 +12,8 @@ from services.get_data import get_data
 from database.peewee_db import User, History
 
 # username_to_delete = "alek_fo"
-# deleted_count = User.delete().where(User.user_name == username_to_delete).execute()
+# inst = User.get_or_none(User.user_name == username_to_delete)
+# deleted_hist = History.delete().where(History.user == inst).execute()
 # username_to_delete = "pinkiss7"
 # deleted_count = User.delete().where(User.user_name == username_to_delete).execute()
 

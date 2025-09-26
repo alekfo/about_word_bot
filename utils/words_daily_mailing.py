@@ -34,7 +34,7 @@ def daily_mailing(bot: TeleBot):
 
                     bot.send_message(i_user.user_id, f'Ежедневная порция слов🔔\n\nСлово дня: <b>{word}</b>\n\n{translate_result}',
                                      parse_mode='HTML')
-            time.sleep(60)
+            time.sleep(28800)
         except Exception as e:
             bot.send_message(ADMIN_ID, f'Произошла ошибка при массовой рассылке: {e}')
-            time.sleep(100)
+            time.sleep(3600)
