@@ -46,7 +46,7 @@ def get_data(word, lang):
 
         output_str = f'Направление перевода: <b>{lang}</b>\nНайденные {mode} слова <b>{word.upper()}</b>:\n'
         for i_key, i_val in data.items():
-            output_str += f'<b>{i_key.upper()}</b>: {', '.join(i_val)}\n'
+            output_str += f"<b>{i_key.upper()}</b>: {', '.join(i_val)}\n"
 
         return output_str
     except requests.exceptions.RequestException as e:
