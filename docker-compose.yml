@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  ourlogoped-bot: # ← Имя сервиса внутри compose (может быть любым)
+  up_vocab: # ← Имя сервиса внутри compose (может быть любым)
     build: . # ← "Собери образ из Dockerfile в текущей папке"
-    container_name: about_word_bot # ← "Назови контейнер"
+    container_name: up_vocab_bot # ← "Назови контейнер"
     env_file: .env  # ← "Возьми переменные окружения из файла .env"
     volumes:
       # КРИТИЧЕСКИ ВАЖНО: монтируем вашу папку в контейнер - т.е все что появляется в /app/data автоматически появляется на хосте (локальном компе) по указанному в начале адресу
-      - "/home/vboxuser/PycharmProjects/about_word_bot/DATABASE:/app/data"
+      - "/home/vboxuser/PycharmProjects/about_word_bot/database:/app/data"
     restart: unless-stopped # ← "Перезапускай контейнер при падении, если я не остановил его вручную"
