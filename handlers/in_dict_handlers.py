@@ -75,21 +75,27 @@ def reg_in_dict_handlers(bot: TeleBot):
             bot.set_state(message.from_user.id, reg_states.choise, message.chat.id)
             bot.send_message(message.chat.id, '🌐Выбери словарь', reply_markup=choise_lang_markup())
         elif message.text.isalpha() and message.text != '↩️Вернуться к выбору словарей':
-            with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-                curr_lang = data.get('lang', 'en-ru')
-                result = get_data(message.text, curr_lang)
-            if result != 'По твоему запросу ничего не найдено\n':
-                cur_user = User.get_or_none(User.user_id == message.from_user.id)
-                History.create(
-                    user=cur_user,
-                    results=result
-                )
+            try:
+                with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+                    curr_lang = data.get('lang', 'en-ru')
+                    result = get_data(message.text, curr_lang)
+                if result and result != 'По твоему запросу ничего не найдено\n':
+                    cur_user = User.get_or_none(User.user_id == message.from_user.id)
+                    if cur_user:
+                        History.create(
+                            user=cur_user,
+                            results=result
+                        )
 
-            bot.send_message(message.chat.id, f'{result}\n'
-                                              f'🚀Если хочешь продолжить — отправь новое слово,\n\n'
-                                              f'↩️Если хочешь вернуться к выбору словарей — '
-                                              f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
-                             reply_markup=back_to_choise(), parse_mode='HTML')
+                bot.send_message(message.chat.id, f'{result}\n'
+                                                  f'🚀Если хочешь продолжить — отправь новое слово,\n\n'
+                                                  f'↩️Если хочешь вернуться к выбору словарей — '
+                                                  f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
+                                 reply_markup=back_to_choise(), parse_mode='HTML')
+            except Exception as e:
+                bot.send_message(message.chat.id, f'❌Произошла ошибка при переводе: {e}\n'
+                                                  f'Попробуйте еще раз или вернитесь к выбору словарей.',
+                                 reply_markup=back_to_choise())
         else:
             bot.send_message(message.chat.id, '❌Слово должно состоять только из букв. Введи корректное слово '
                                               'или вернись к выбору словарей, нажав на кнопку.',

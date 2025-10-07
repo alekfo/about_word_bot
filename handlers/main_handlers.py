@@ -8,8 +8,8 @@ from keyboards.keybords import (choise_lang_markup,
                                 commands,
                                 turning_on_mailing,
                                 turning_off_mailing)
-from services.get_data import get_data
-from database.peewee_db import User, History
+from database.peewee_db import User
+from config import ADMIN_ID
 
 
 def reg_main_handlers(bot: TeleBot):
@@ -70,6 +70,7 @@ def reg_main_handlers(bot: TeleBot):
                 first_name = first_name,
                 lang_for_mailing = 'ru-en'
             )
+            bot.send_message(ADMIN_ID, f'Зарегистрировался новый пользователь {username}')
             bot.send_message(message.chat.id, f"👋Привет, {message.from_user.first_name}!\n"
                                               "Этот бот поможет тебе перевести необходимые слова, "
                                               "а также узнать новые синонимы.\n"
