@@ -93,7 +93,7 @@ def reg_in_dict_handlers(bot: TeleBot):
                                                   f'нажми на кнопку <b>Вернуться к выбору словарей</b>',
                                  reply_markup=back_to_choise(), parse_mode='HTML')
             except Exception as e:
-                bot.send_message(message.chat.id, f'❌Произошла ошибка при переводе: {e}\n'
+                bot.send_message(message.chat.id, f'❌Произошла ошибка связи с переводчиком: {e}\n'
                                                   f'Попробуйте еще раз или вернитесь к выбору словарей.',
                                  reply_markup=back_to_choise())
         else:
